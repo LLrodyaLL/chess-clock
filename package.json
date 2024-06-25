@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@salutejs/plasma-icons": "^1.194.0",
     "@salutejs/plasma-tokens": "^1.81.0",
     "@salutejs/plasma-ui": "^1.250.0",
     "@sberdevices/assistant-client": "^5.0.2",
@@ -12,7 +13,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
-    "styled-components": "^6.1.11",
+    "styled-components": "^5.1.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

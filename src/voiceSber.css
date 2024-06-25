@@ -1,0 +1,51 @@
+.SuggestsSuggest {
+    background-color: transparent; /* Убираем белый фон */
+    border: none; /* Убираем границу */
+    @media (max-height: 900px) {
+        font-size: 1em; /* Установка размера шрифта при максимальной высоте 900px */
+    }
+    @media (max-width: 900px) {
+        margin-left: 10px; /* Сдвигаем элемент на 10px при максимальной ширине 900px */
+    }
+}
+
+:focus {
+    outline: none; /* Убираем стандартное подчеркивание фокуса */
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); /* Добавляем тень вокруг элемента при фокусе */
+    border-radius: 12px; /* Закругляем углы */
+    transition: box-shadow 0.2s ease; /* Плавное изменение тени */
+}
+
+.Bubble {
+    background-color: rgba(255, 255, 255, 0); /* Прозрачный фон */
+    padding: 12px 20px; /* Внутренние отступы */
+    transform: translateX(-25%); /* Смещение влево на 25% */
+    top: -10px; /* Отступ сверху */
+    font-size: 1.5em; /* Размер шрифта */
+    @media (max-height: 900px) {
+        font-size: 1em; /* Установка размера шрифта при максимальной высоте 900px */
+        transform: translateY(50%); /* Смещение по вертикали */
+    }
+    @media (max-width: 900px) {
+        transform: translateY(50%) translateX(30%); /* Смещение по вертикали и горизонтали */
+    }
+    display: none; /* Скрытие элемента по умолчанию */
+}
+
+.NativePanel {
+    @media (max-height: 900px) {
+        padding: 36px 64px 6px; /* Внутренние отступы при максимальной высоте 900px */
+    }
+}
+
+.myText {
+    background-color: transparent; /* Прозрачный фон */
+    color: white; /* Цвет текста белый */
+    font-size: 1.75em; /* Размер шрифта */
+    @media (max-height: 900px) {
+        font-size: 1em; /* Установка размера шрифта при максимальной высоте 900px */
+    }
+    border: none; /* Убираем границу */
+    outline: none; /* Убираем стандартное подчеркивание фокуса */
+    width: 100%; /* Ширина элемента на 100% */
+}
