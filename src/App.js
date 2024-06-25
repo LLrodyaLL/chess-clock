@@ -73,27 +73,27 @@ function App() {
 
   return (
     <div className="App">
-      <div className="container">
-        <div className="clock" id="player1">
+      <div className="clock-container">
+        <div className="clock">
           <div className="player-label">Черные</div>
-          <div>{formatTime(player1Time)}</div>
-          <button onClick={() => switchTurn(1)}>Ход</button>
+          <div className="timer">{formatTime(player1Time)}</div>
+          <button className="turn-button" onClick={() => switchTurn(1)}>Ход</button>
         </div>
-        <div className="clock" id="player2">
+        <div className="clock">
           <div className="player-label">Белые</div>
-          <div>{formatTime(player2Time)}</div>
-          <button onClick={() => switchTurn(2)}>Ход</button>
+          <div className="timer">{formatTime(player2Time)}</div>
+          <button className="turn-button" onClick={() => switchTurn(2)}>Ход</button>
         </div>
       </div>
       <div className="set-time">
-        <button onClick={() => setTime(1)}>1 минута</button>
-        <button onClick={() => setTime(5)}>5 минут</button>
-        <button onClick={() => setTime(10)}>10 минут</button>
-        <button onClick={() => setTime(30)}>30 минут</button>
-        <button onClick={() => setTime(60)}>60 минут</button>
+        <button className="time-button" onClick={() => setTime(1)}>1 минута</button>
+        <button className="time-button" onClick={() => setTime(5)}>5 минут</button>
+        <button className="time-button" onClick={() => setTime(10)}>10 минут</button>
+        <button className="time-button" onClick={() => setTime(30)}>30 минут</button>
+        <button className="time-button" onClick={() => setTime(60)}>60 минут</button>
       </div>
       <div className="pause">
-        <button onClick={togglePause}>{isPaused ? 'Продолжить' : 'Пауза'}</button>
+        <button className="pause-button" onClick={togglePause}>{isPaused ? 'Продолжить' : 'Пауза'}</button>
       </div>
     </div>
   );

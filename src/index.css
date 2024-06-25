@@ -5,9 +5,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@media (min-width: 1920px) and (min-height: 1080px) {
+  .TextBox {
+    size: 'l'; 
+  }
+}
+
+@media (max-width: 1920px) and (max-height: 1080px) {
+  .TextBox {
+    size: 'm'; 
+  }
 }
