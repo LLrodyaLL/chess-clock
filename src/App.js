@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
+import { useSpatnavInitialization, useSection, getCurrentFocusedElement } from '@salutejs/spatial';
 import './App.css';
 
 const initializeAssistant = (getState) => {
@@ -23,6 +24,12 @@ function App() {
   const [gameStarted, setGameStarted] = useState(false); // Track if the game has started
   const [assistant, setAssistant] = useState(null);
   const [character, setCharacter] = useState('sber');
+  
+  useSpatnavInitialization();
+  
+  const firstElementRef = useRef(null); 
+  const secondElementRef = useRef(null); 
+  const [sectionProps, customize1] = useSection('sectionName');
 
   useEffect(() => {
     const assistant = initializeAssistant(() => getStateForAssistant());
@@ -57,6 +64,16 @@ function App() {
     assistant.on('tts', (event) => {
       console.log('assistant.on(tts)', event);
     });
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const focusedElement = getCurrentFocusedElement();
+      console.log("Focused element:", focusedElement);
+    }, 5000); // 5000 миллисекунд = 5 секунд
+
+    // Очистка интервала при размонтировании компонента
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -143,46 +160,60 @@ function App() {
   const dispatchAssistantAction = async (action) => {
     console.log('dispatchAssistantAction', action);
     if (action) {
-      switch (action.type) {
-        case 'switch_turn':
-          console.log('dispatch: switchTurn:', action.player);
-          return switchTurn(action.player);
-        case 'set_time':
-          console.log('dispatch: setTime:', action.minutes);
-          return setTime(action.minutes);
-        case 'toggle_pause':
-          console.log('dispatch: togglePause');
-          return togglePause();
-        default:
-          throw new Error();
-      }
+        switch (action.type) {
+            case 'switch_turn':
+                console.log('dispatch: switchTurn:', action.player);
+                return switchTurn(action.player);
+            case 'set_time':
+                console.log('dispatch: setTime:', action.minutes);
+                return setTime(action.minutes);
+            case 'toggle_pause':
+                console.log('dispatch: togglePause');
+                return togglePause();
+            case 'start_game':
+                console.log('dispatch: startGame');
+                return startTimerForPlayer2();
+            default:
+                throw new Error();
+        }
     }
-  };
+};
+
+  useEffect(() => {
+    if (firstElementRef.current) {
+      firstElementRef.current.focus();
+    }
+
+    customize1({
+      getDefaultElement: (sectionPropsRoot) => sectionPropsRoot.firstElementChild,
+      enterTo: 'default-element',
+    });
+  }, [customize1]); 
 
   return (
-    <div className="App">
+    <div className="App" {...sectionProps}>
       <div className="clock-container">
         <div className="clock">
           <div className="player-label">Черные</div>
           <div className="timer">{formatTime(player1Time)}</div>
-          <button className="turn-button" onClick={() => switchTurn(1)} disabled={!gameStarted}>Ход</button>
+          <button ref={firstElementRef} className="turn-button sn-section-item" tabIndex={-1} onClick={() => switchTurn(1)} disabled={!gameStarted}>Ход</button>
         </div>
         <div className="clock">
           <div className="player-label">Белые</div>
           <div className="timer">{formatTime(player2Time)}</div>
-          <button className="turn-button" onClick={() => switchTurn(2)} disabled={!gameStarted}>Ход</button>
+          <button ref={secondElementRef} className="turn-button sn-section-item" tabIndex={-1} onClick={() => switchTurn(2)} disabled={!gameStarted}>Ход</button>
         </div>
       </div>
       <div className="button-row">
-        <button className="pause-button" onClick={togglePause} disabled={!gameStarted}>{isPaused ? 'Продолжить' : 'Пауза'}</button>
-        <button className="time-button start-button" onClick={startTimerForPlayer2}>Начать</button>
+        <button className="pause-button sn-section-item" tabIndex={-1} onClick={togglePause} disabled={!gameStarted}>{isPaused ? 'Продолжить' : 'Пауза'}</button>
+        <button className="time-button start-button sn-section-item" tabIndex={-1} onClick={startTimerForPlayer2}>Начать</button>
       </div>
       <div className="set-time">
-        <button className="time-button" onClick={() => setTime(1)}>1 минута</button>
-        <button className="time-button" onClick={() => setTime(5)}>5 минут</button>
-        <button className="time-button" onClick={() => setTime(10)}>10 минут</button>
-        <button className="time-button" onClick={() => setTime(30)}>30 минут</button>
-        <button className="time-button" onClick={() => setTime(60)}>60 минут</button>
+        <button className="time-button sn-section-item" tabIndex={-1} onClick={() => setTime(1)}>1 минута</button>
+        <button className="time-button sn-section-item" tabIndex={-1} onClick={() => setTime(5)}>5 минут</button>
+        <button className="time-button sn-section-item" tabIndex={-1} onClick={() => setTime(10)}>10 минут</button>
+        <button className="time-button sn-section-item" tabIndex={-1} onClick={() => setTime(30)}>30 минут</button>
+        <button className="time-button sn-section-item" tabIndex={-1} onClick={() => setTime(60)}>60 минут</button>
       </div>
     </div>
   );
