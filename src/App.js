@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import { createAssistant, createSmartappDebugger } from '@salutejs/client';
+import './App.css';
+
+const initializeAssistant = (getState) => {
+  if (process.env.NODE_ENV === 'development') {
+    return createSmartappDebugger({
+      token: process.env.REACT_APP_TOKEN ?? '',
+      initPhrase: `Запусти ${process.env.REACT_APP_SMARTAPP}`,
+      getState,
+    });
+  } else {
+    return createAssistant({ getState });
+  }
+};
 
 function App() {
   const [player1Time, setPlayer1Time] = useState(300); // 5 minutes in seconds
@@ -10,36 +22,42 @@ function App() {
   const [isPaused, setIsPaused] = useState(false);
   const [gameStarted, setGameStarted] = useState(false); // Track if the game has started
   const [assistant, setAssistant] = useState(null);
+  const [character, setCharacter] = useState('sber');
 
   useEffect(() => {
-    const initializeAssistant = () => {
-      if (process.env.NODE_ENV === 'development') {
-        return createSmartappDebugger({
-          token: process.env.REACT_APP_TOKEN ?? '',
-          initPhrase: `Запусти ${process.env.REACT_APP_SMARTAPP}`,
-          getState: () => ({ player1Time, player2Time }),
-          nativePanel: {
-            defaultText: 'Приветствую!',
-            screenshotMode: false,
-            tabIndex: -1,
-          },
-        });
+    const assistant = initializeAssistant(() => getStateForAssistant());
+    setAssistant(assistant);
+
+    assistant.on('data', (event) => {
+      console.log('assistant.on(data)', event);
+      if (event.type === 'character') {
+        console.log(`assistant.on(data): character: "${event?.character?.id}"`);
+        setCharacter(event.character.id);
+      } else if (event.type === 'insets') {
+        console.log('assistant.on(data): insets');
       } else {
-        return createAssistant({
-          getState: () => ({ player1Time, player2Time }),
-        });
+        const { action } = event;
+        dispatchAssistantAction(action);
       }
-    };
+    });
 
-    const assistantInstance = initializeAssistant();
-    setAssistant(assistantInstance);
+    assistant.on('start', (event) => {
+      let initialData = assistant.getInitialData();
+      console.log('assistant.on(start)', event, initialData);
+    });
 
-    return () => {
-      if (assistantInstance) {
-        assistantInstance.destroy();
-      }
-    };
-  }, [player1Time, player2Time]);
+    assistant.on('command', (event) => {
+      console.log('assistant.on(command)', event);
+    });
+
+    assistant.on('error', (event) => {
+      console.log('assistant.on(error)', event);
+    });
+
+    assistant.on('tts', (event) => {
+      console.log('assistant.on(tts)', event);
+    });
+  }, []);
 
   useEffect(() => {
     if (timer) {
@@ -52,9 +70,7 @@ function App() {
           setPlayer1Time(prevTime => {
             if (prevTime <= 0) {
               clearInterval(timer);
-              if (assistant) {
-                assistant.sendData({ action: { action_id: 'game_end', parameters: { winner: 'Player 2' } } });
-              }
+              alert('Время черных истекло!');
               return 0;
             }
             return prevTime - 1;
@@ -65,9 +81,7 @@ function App() {
           setPlayer2Time(prevTime => {
             if (prevTime <= 0) {
               clearInterval(timer);
-              if (assistant) {
-                assistant.sendData({ action: { action_id: 'game_end', parameters: { winner: 'Player 1' } } });
-              }
+              alert('Время белых истекло!');
               return 0;
             }
             return prevTime - 1;
@@ -111,6 +125,37 @@ function App() {
     if (!isPaused && !gameStarted) {
       setGameStarted(true);
       setCurrentTurn(2);
+    }
+  };
+
+  const getStateForAssistant = () => {
+    const state = {
+      player1Time,
+      player2Time,
+      currentTurn,
+      isPaused,
+      gameStarted
+    };
+    console.log('getStateForAssistant: state:', state);
+    return state;
+  };
+
+  const dispatchAssistantAction = async (action) => {
+    console.log('dispatchAssistantAction', action);
+    if (action) {
+      switch (action.type) {
+        case 'switch_turn':
+          console.log('dispatch: switchTurn:', action.player);
+          return switchTurn(action.player);
+        case 'set_time':
+          console.log('dispatch: setTime:', action.minutes);
+          return setTime(action.minutes);
+        case 'toggle_pause':
+          console.log('dispatch: togglePause');
+          return togglePause();
+        default:
+          throw new Error();
+      }
     }
   };
 
