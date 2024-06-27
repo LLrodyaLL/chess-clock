@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@salutejs/client": "^1.35.0",
     "@salutejs/plasma-icons": "^1.194.0",
     "@salutejs/plasma-tokens": "^1.81.0",
     "@salutejs/plasma-ui": "^1.250.0",

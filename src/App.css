@@ -9,7 +9,7 @@
 
 .clock-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between; /* Изменили расположение элементов на противоположные стороны */
   width: 100%;
   margin-bottom: 20px;
 }
@@ -72,7 +72,9 @@
 }
 
 .pause {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .pause-button {
@@ -89,3 +91,34 @@
 .pause-button:hover {
   background-color: #c82333;
 }
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.start-button {
+  background-color: #218838; /* Dark green background color */
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-left: 10px; /* Adjust margin if needed */
+}
+
+.start-button:hover {
+  background-color: #1e7e34; /* Darker shade on hover */
+}
+
+
+/* Disable style for disabled buttons */
+/*.turn-button:disabled,
+.pause-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+} */
+
