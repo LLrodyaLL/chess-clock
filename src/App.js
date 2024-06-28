@@ -29,6 +29,7 @@ function App() {
   
   const firstElementRef = useRef(null); 
   const secondElementRef = useRef(null); 
+  const startButtonRef = useRef(null); // Ref for the "Начать" button
   const [sectionProps, customize1] = useSection('sectionName');
 
   useEffect(() => {
@@ -87,7 +88,6 @@ function App() {
           setPlayer1Time(prevTime => {
             if (prevTime <= 0) {
               clearInterval(timer);
-              alert('Время черных истекло!');
               return 0;
             }
             return prevTime - 1;
@@ -98,7 +98,6 @@ function App() {
           setPlayer2Time(prevTime => {
             if (prevTime <= 0) {
               clearInterval(timer);
-              alert('Время белых истекло!');
               return 0;
             }
             return prevTime - 1;
@@ -180,8 +179,8 @@ function App() {
 };
 
   useEffect(() => {
-    if (firstElementRef.current) {
-      firstElementRef.current.focus();
+    if (startButtonRef.current) {
+      startButtonRef.current.focus();
     }
 
     customize1({
@@ -206,7 +205,7 @@ function App() {
       </div>
       <div className="button-row">
         <button className="pause-button sn-section-item" tabIndex={-1} onClick={togglePause} disabled={!gameStarted}>{isPaused ? 'Продолжить' : 'Пауза'}</button>
-        <button className="time-button start-button sn-section-item" tabIndex={-1} onClick={startTimerForPlayer2}>Начать</button>
+        <button ref={startButtonRef} className="time-button start-button sn-section-item" tabIndex={0} autoFocus onClick={startTimerForPlayer2}>Начать</button>
       </div>
       <div className="set-time">
         <button className="time-button sn-section-item" tabIndex={-1} onClick={() => setTime(1)}>1 минута</button>
