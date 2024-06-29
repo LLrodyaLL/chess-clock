@@ -3,15 +3,21 @@ import { createAssistant, createSmartappDebugger } from '@salutejs/client';
 import { useSpatnavInitialization, useSection, getCurrentFocusedElement } from '@salutejs/spatial';
 import './App.css';
 
-const initializeAssistant = (getState) => {
+const initializeAssistant = (getState /*: any*/, getRecoveryState) => {
   if (process.env.NODE_ENV === 'development') {
     return createSmartappDebugger({
       token: process.env.REACT_APP_TOKEN ?? '',
       initPhrase: `Запусти ${process.env.REACT_APP_SMARTAPP}`,
-      getState,
+      getState,                                           
+      // getRecoveryState: getState,                                           
+      nativePanel: {
+        defaultText: '',
+        screenshotMode: false,
+        tabIndex: -1,
+    },
     });
   } else {
-    return createAssistant({ getState });
+  return createAssistant({ getState });
   }
 };
 
